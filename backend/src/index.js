@@ -1,4 +1,5 @@
 import express from 'express';
+import globalErrorHandler from './middlewares/globalErrorHandler.js';
 // import routes
 
 // create server 
@@ -17,6 +18,8 @@ app.get('/', (req, res, next) => {
   }
 });
 
+// globalErrorHandler 
+app.use(globalErrorHandler);
 
 // export express app 
 export default app;
