@@ -7,6 +7,10 @@ For detailed requirements and future plans, please refer to the PDF document:
 
 [requirement/3._contact_manager.pdf](requirement/3._contact_manager.pdf)
 
+## Deployment
+
+- 🖥️ **Frontend:** [https://people-desk-delta.vercel.app/](https://people-desk-delta.vercel.app/)
+- 🗄️ **Backend:** [https://peopledesk.onrender.com/](https://peopledesk.onrender.com/)
 
 ## Author & Maintainer
 
