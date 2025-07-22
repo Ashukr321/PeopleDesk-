@@ -7,6 +7,41 @@ For detailed requirements and future plans, please refer to the PDF document:
 
 [requirement/3._contact_manager.pdf](requirement/3._contact_manager.pdf)
 
+## Backend Folder Structure
+
+```
+backend/
+├── app.js
+├── package.json
+├── package-lock.json
+└── src/
+    ├── config/
+    │   ├── connectDb.js
+    │   └── envConfig.js
+    ├── middlewares/
+    │   └── globalErrorHandler.js
+    ├── modules/
+    │   ├── contact/
+    │   │   ├──contact.controller.js
+    │   │   ├── contact.model.js
+    │   │   └── contact.routes.js
+    │   ├── profile/
+    │   │   ├──profile.controller.js
+    │   │   ├── profile.model.js
+    │   │   └── profile.routes.js
+    │   └── user/
+    │       ├── user.controller.js
+    │       ├── user.model.js
+    │       └── user.routes.js
+    └── index.js
+```
+
+**How to use:**  
+- You can copy and paste this directly into your README.
+- This format uses `├──` and `└──` for branches and `│` for vertical lines, which is a common and visually clear way to represent directory trees in documentation.
+
+Let me know if you want a similar structure for the frontend or any other part of your project!
+
 ## Deployment
 
 - 🖥️ **Frontend:** [https://people-desk-delta.vercel.app/](https://people-desk-delta.vercel.app/)
