@@ -1,10 +1,15 @@
 import express from 'express';
 import globalErrorHandler from './middlewares/globalErrorHandler.js';
 // import routes
+import userRoutes from './modules/user/user.routes.js'
 
 // create server 
 const app = express();
 
+
+// baseUrl 
+const baseUrl = "/api"
+app.use(`${baseUrl}`, userRoutes);
 
 // default route 
 app.get('/', (req, res, next) => {
