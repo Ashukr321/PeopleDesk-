@@ -57,5 +57,16 @@ const forgetPassword = async (req, res, next) => {
   }
 }
 
+// 6 verifyOtp
+const verifyOtp = async (req, res, next) => {
+  try {
+    return res.status(200).json({
+      success: true,
+      message: "✅ OTP Verified Successfully!"
+    })
+  } catch (error) {
+    return next(error);
+  }
+}
 
-export { registerUser, loginUser, changePassword, deleteAccount, forgetPassword }
+export { registerUser, loginUser, verifyOtp,changePassword, deleteAccount, forgetPassword }
