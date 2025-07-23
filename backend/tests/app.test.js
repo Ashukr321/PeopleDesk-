@@ -1,0 +1,1 @@
+console.log('In this folder structure we test our web apps')
