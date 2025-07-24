@@ -26,6 +26,7 @@ jobs:
           push: true
           tags: ashukr321/peopledesk-backend:latest
 
+
       - name: Build and push Frontend image
         uses: docker/build-push-action@v5
         with:
