@@ -69,4 +69,4 @@ const verifyOtp = async (req, res, next) => {
   }
 }
 
-export { registerUser, loginUser, verifyOtp,changePassword, deleteAccount, forgetPassword }
+export { registerUser, loginUser, verifyOtp, changePassword, deleteAccount, forgetPassword }
