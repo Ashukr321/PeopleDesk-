@@ -8,6 +8,8 @@ PeopleDesk is a full-featured, modern Contact Management Web App built with the 
 - 🗄️ **Backend:** [https://peopledesk.onrender.com/](https://peopledesk.onrender.com/)
 
 
+
+
 ## Requirements & Future Plans
 For detailed requirements and future plans, please refer to the PDF document:
 
@@ -28,6 +30,8 @@ For detailed requirements and future plans, please refer to the PDF document:
 - multer
 - cloudinary
 - http-errors
+
+
 
 
 ## Backend Folder Structure
