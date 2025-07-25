@@ -11,7 +11,10 @@ RUN npm install
 
 # copy all src file 
 COPY . . 
-
+# declare port 
+ARG FRONTEND_PORT
+# set env variable 
+ENV FRONTEND_PORT=${FRONTEND_PORT}
 # expose port 
 EXPOSE 3000
 # Run application 
