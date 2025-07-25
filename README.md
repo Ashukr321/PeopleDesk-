@@ -10,6 +10,8 @@ PeopleDesk is a full-featured, modern Contact Management Web App built with the 
 
 
 
+
+
 ## Requirements & Future Plans
 For detailed requirements and future plans, please refer to the PDF document:
 
