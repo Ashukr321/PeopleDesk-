@@ -32,6 +32,7 @@ jobs:
             MONGO_URI=${{secrets.MONGO_URI}}
             DB_NAME=${{secrets.DB_NAME}}
             
+            
       #frontend
 
 
@@ -42,3 +43,5 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: ashukr321/peopledesk-frontend:latest
+          build-args: |
+            FRONTEND_PORT=${{secrets.FRONTEND_PORT}}
