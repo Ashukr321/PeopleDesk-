@@ -1,0 +1,1 @@
+## All endpoints with method, path, response

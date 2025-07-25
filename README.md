@@ -8,7 +8,17 @@ PeopleDesk is a full-featured, modern Contact Management Web App built with the 
 - 🗄️ **Backend:** [https://peopledesk.onrender.com/](https://peopledesk.onrender.com/)
 
 
+## 📁 Product Documentation
 
+- 📄 [Product Readme](./product_requirements/readme_for_product.md)
+- 📝 [User Stories](./product_requirements/user_stories.md)
+- 🧱 [Data Model](./product_requirements/data_model.md)
+- 🔗 [API List](./product_requirements/api_list.md)
+- ✅ [Feature Checklist](./product_requirements/feature_checklist.md)
+- 🛠️ [Build Phases](./product_requirements/build_phases.md)
+- 📦 [CI/CD Plan](./product_requirements/ci_cd_plan.md)
+- 🧪 [Testing Strategy](./product_requirements/testing_strategy.md) <!-- TODO: Add this file if not present -->
+- 🗂️ [Docker Plan](./product_requirements/docker_plan.md)
 
 
 
