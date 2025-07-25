@@ -18,6 +18,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      #backend
       - name: Build and push Backend image
         uses: docker/build-push-action@v5
         with:
@@ -25,7 +26,11 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: ashukr321/peopledesk-backend:latest
-
+          build-args: |
+            PORT=${{secrets.PORT}}
+            MONGO_URI=${{secrets.MONGO_URI}}
+            DB_NAME=${{secrets.DB_NAME}}
+      #frontend
       - name: Build and push Frontend image
         uses: docker/build-push-action@v5
         with:
