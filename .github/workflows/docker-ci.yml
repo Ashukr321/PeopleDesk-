@@ -36,14 +36,12 @@ jobs:
 
             
       #frontend
-
-
-      - name: Build and push Frontend image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: ashukr321/peopledesk-frontend:latest
-          build-args: |
-            FRONTEND_PORT=${{secrets.FRONTEND_PORT}}
+      # - name: Build and push Frontend image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./frontend
+      #     file: ./frontend/Dockerfile
+      #     push: true
+      #     tags: ashukr321/peopledesk-frontend:latest
+      #     build-args: |
+      #       FRONTEND_PORT=${{secrets.FRONTEND_PORT}}

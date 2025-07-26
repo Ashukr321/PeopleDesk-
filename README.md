@@ -65,6 +65,10 @@ backend/
     │   └── envConfig.js
     ├── middlewares/
     │   └── globalErrorHandler.js
+    ├── mailTemplates/
+    │   └── registerUser.html
+    ├── utils/
+    │   └── emailServices.js
     ├── modules/
     │   ├── contact/
     │   │   ├── contact.controller.js
@@ -77,8 +81,8 @@ backend/
     │   └── user/
     │       ├── user.controller.js
     │       ├── user.model.js
-    │       └── user.routes.js
-    ├── validation/
+    │       ├── user.routes.js
+    │       └── user.validation.js
     └── index.js
 ```
 
