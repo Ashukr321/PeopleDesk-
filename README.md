@@ -68,9 +68,11 @@ backend/
     ├── middlewares/
     │   └── globalErrorHandler.js
     ├── mailTemplates/
+    │   ├── loginUser.html
     │   └── registerUser.html
     ├── utils/
-    │   └── emailServices.js
+    │   ├── emailServices.js
+    │   └── generateOTP.js
     ├── modules/
     │   ├── contact/
     │   │   ├── contact.controller.js
