@@ -30,6 +30,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/joi": "^17.2.2",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/nodemailer": "^6.4.17",
     "jest": "^30.0.5"
   }

@@ -1,11 +1,13 @@
 import createError from 'http-errors'
-import { registerUserSchema, loginUserSchema } from './user.validation.js';
+import { registerUserSchema, loginUserSchema, otpVerificationSchema } from './user.validation.js';
 import User from './user.model.js';
 import bcrypt from 'bcrypt';
 import { sendEmail } from '../../utils/emailServices.js';
 import generateOTP from '../../utils/generateOTP.js';
 import fs from 'fs';
 import path from 'path';
+import jwt from 'jsonwebtoken';
+import envConfig from '../../config/envConfig.js';
 const __dirname = path.resolve();
 
 
@@ -172,18 +174,58 @@ const loginUser = async (req, res, next) => {
   }
 }
 
-
 // 3 verifyOtp
 const verifyOtp = async (req, res, next) => {
   try {
+    const { error, value } = otpVerificationSchema.validate(req.body);
+    if (error) {
+      return next(createError(400, error.message));
+    }
+
+    const { email, otp } = value;
+
+    // Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return next(createError(400, "User not found with the provided email."));
+    }
+
+    // Check if OTP is expired
+    const isOtpExpired = Date.now() > existingUser.otpExpiresAt;
+    if (isOtpExpired) {
+      return next(createError(400, "OTP has expired. Please request a new one."));
+    }
+
+    // Compare OTP
+    const isOtpMatch = await bcrypt.compare(otp, existingUser.otp);
+    if (!isOtpMatch) {
+      return next(createError(400, "Incorrect OTP. Please try again."));
+    }
+    // set isVerified - true
+    existingUser.isVerified= true;
+    // Clear OTP and expiry from DB
+    existingUser.otp = undefined;
+    existingUser.otpExpiresAt = undefined;
+    await existingUser.save();
+
+    // Create JWT token
+    const token = jwt.sign(
+      { userId: existingUser._id },
+      envConfig.jwt_secret,
+      { expiresIn: envConfig.jwt_token_expires_in }
+    );
+
     return res.status(200).json({
       success: true,
-      message: "✅ OTP Verified Successfully!"
-    })
+      message: "✅ OTP verified successfully. Login completed!",
+      token,
+    });
   } catch (error) {
     return next(error);
   }
-}
+};
+
+
 // 4. changePassword 
 const changePassword = async (req, res, next) => {
   try {
