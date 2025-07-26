@@ -12,6 +12,7 @@ const globalErrorHandler = (err, req, res, next) => {
     success: false,
     message: err.message || "Something Went Wrong!"
   })
+  
 }
 
 

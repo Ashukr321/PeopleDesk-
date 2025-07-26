@@ -31,7 +31,9 @@ jobs:
             PORT=${{secrets.PORT}}
             MONGO_URI=${{secrets.MONGO_URI}}
             DB_NAME=${{secrets.DB_NAME}}
-            
+            USER_EMAIL=${{secrets.USER_EMAIL}}
+            USER_EMAIL_PASSWORD=${{secrets.USER_EMAIL_PASSWORD}}
+
             
       #frontend
 
