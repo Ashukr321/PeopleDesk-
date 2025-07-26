@@ -43,6 +43,8 @@ For detailed requirements and future plans, please refer to the PDF document:
 - multer
 - cloudinary
 - http-errors
+- nodemailer 
+
 
 
 

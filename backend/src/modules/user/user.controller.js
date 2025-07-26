@@ -1,12 +1,14 @@
-
 import createError from 'http-errors'
-import { registerUserSchema } from './user.validation.js';
+import { registerUserSchema, loginUserSchema } from './user.validation.js';
 import User from './user.model.js';
 import bcrypt from 'bcrypt';
 import { sendEmail } from '../../utils/emailServices.js';
+import generateOTP from '../../utils/generateOTP.js';
 import fs from 'fs';
 import path from 'path';
 const __dirname = path.resolve();
+
+
 
 // 1 . registerUser ❌No required auth 
 const registerUser = async (req, res, next) => {
@@ -62,7 +64,7 @@ const registerUser = async (req, res, next) => {
       <p>
         <b>Connect with us:</b><br>
         <a href="https://www.linkedin.com/in/ashukr321/" target="_blank" style="text-decoration:none;">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn" width="32" height="32" style="vertical-align:middle;"/> LinkedIn
+          LinkedIn
         </a>
         &nbsp; | &nbsp;
         <a href="https://github.com/Ashukr321/PeopleDesk-" target="_blank" style="text-decoration:none;">
@@ -83,6 +85,7 @@ const registerUser = async (req, res, next) => {
       subject: "Welcome to PeopleDesk! Your Account Has Been Created Successfully",
       html: emailHtml
     };
+
     // Send email
     await sendEmail(registerSendEmail);
     // Respond to client
@@ -96,20 +99,92 @@ const registerUser = async (req, res, next) => {
 }
 
 
-
-
 // 2 . loginUser ❌No required auth 
 const loginUser = async (req, res, next) => {
   try {
+    const { error, value } = loginUserSchema.validate(req.body);
+    if (error) {
+      return next(createError(400, error.message));
+    }
+    const { email, password } = value;
+
+    console.log(email, password);
+    // checkUserExist
+    const existUser = await User.findOne({ email: email });
+    if (!existUser) {
+      const err = createError(400, "User Not Found!");
+      return next(err);
+    }
+    // isMatchPassword 
+    const isMatchPassword = await bcrypt.compare(password, existUser.password);
+    if (!isMatchPassword) {
+      const err = createError(400, "Incorrect password. Please try again.");
+      return next(err);
+    }
+    // get otp 
+    const otp = generateOTP(6);
+    // hashOtp for security
+    const hashOtp = await bcrypt.hash(otp, 10);
+    //set otp
+    existUser.otp = hashOtp;
+    // Set OTP to expire in 5 minutes 
+    existUser.otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+    await existUser.save();
+    // send opt to register user email 
+    // Read HTML template for email
+    const emailTemplatePath = path.join(__dirname, 'src', 'mailTemplates', 'loginUser.html');
+    let emailHtml = '';
+
+    // Send OTP to user's email and add message for validity (5 min)
+    emailHtml = fs.readFileSync(emailTemplatePath, 'utf-8');
+    emailHtml = `
+        <h1>Your OTP for login is:  <b> <mark>${otp}</mark> </b></h1>
+        <p style="color: #d9534f;"><b>Note:</b> This OTP is valid for 5 minutes only.</p>
+        <hr>
+        <h2>Welcome to PeopleDesk!</h2>
+        <p>
+          <b>Connect with us:</b><br>
+          &nbsp; | &nbsp;
+
+          <a href="https://www.linkedin.com/in/ashukr321/" target="_blank" style="text-decoration:none;">
+           LinkedIn
+          </a>
+
+          <a href="https://github.com/Ashukr321/PeopleDesk-" target="_blank" style="text-decoration:none;">
+            GitHub
+          </a>
+        </p>
+      `;
+    // verificationsSendEmail 
+    const verificationsSendEmail = {
+      to: email,
+      subject: "OTP Verification",
+      html: emailHtml,
+    };
+    await sendEmail(verificationsSendEmail);
     return res.status(200).json({
       success: true,
-      message: "✅ Login Successfully!"
+      message: "✅ OTP has been sent to your registered email address.)"
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+
+// 3 verifyOtp
+const verifyOtp = async (req, res, next) => {
+  try {
+    return res.status(200).json({
+      success: true,
+      message: "✅ OTP Verified Successfully!"
     })
   } catch (error) {
     return next(error);
   }
 }
-// 3. changePassword 
+// 4. changePassword 
 const changePassword = async (req, res, next) => {
   try {
     return res.status(200).json({
@@ -120,7 +195,7 @@ const changePassword = async (req, res, next) => {
     return next(error);
   }
 }
-// 4. deleteAccount
+// 5. deleteAccount
 const deleteAccount = async (req, res, next) => {
   try {
     return res.status(200).json({
@@ -131,7 +206,7 @@ const deleteAccount = async (req, res, next) => {
     return next(error);
   }
 }
-// 5. forgetPassword   ❌No required auth 
+// 6. forgetPassword   ❌No required auth 
 const forgetPassword = async (req, res, next) => {
   try {
     return res.status(200).json({
@@ -143,16 +218,6 @@ const forgetPassword = async (req, res, next) => {
   }
 }
 
-// 6 verifyOtp
-const verifyOtp = async (req, res, next) => {
-  try {
-    return res.status(200).json({
-      success: true,
-      message: "✅ OTP Verified Successfully!"
-    })
-  } catch (error) {
-    return next(error);
-  }
-}
+
 
 export { registerUser, loginUser, verifyOtp, changePassword, deleteAccount, forgetPassword }
