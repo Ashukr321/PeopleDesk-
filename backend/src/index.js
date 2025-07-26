@@ -1,10 +1,19 @@
 import express from 'express';
 import globalErrorHandler from './middlewares/globalErrorHandler.js';
+import cors  from 'cors'
 // import routes
 import userRoutes from './modules/user/user.routes.js'
 
 // create server 
 const app = express();
+
+// important configurations 
+// enable cors
+app.use(cors({
+  origin:"*"
+}))
+
+app.use(express.json());
 
 
 // baseUrl 
