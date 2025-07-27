@@ -128,12 +128,6 @@ backend/
     └── index.js
 ```
 
-**How to use:**  
-- You can copy and paste this directly into your README.  
-- This format uses `├──` and `└──` for branches and `│` for vertical lines, which is a common and visually clear way to represent directory trees in documentation.
-
-Let me know if you want a similar structure for the frontend or any other part of your project!
-
 ## Docker Usage
 
 Here are some basic Docker commands to help you get started with containerizing and running this project:
