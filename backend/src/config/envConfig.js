@@ -8,7 +8,8 @@ const envConfig = Object.freeze({
   user_email: process.env.USER_EMAIL,
   user_email_password: process.env.USER_EMAIL_PASSWORD,
   jwt_secret: process.env.JWT_SECRET,
-  jwt_token_expires_in: process.env.JWT_TOKEN_EXPIRES_IN
+  jwt_token_expires_in: process.env.JWT_TOKEN_EXPIRES_IN,
+  client_url:process.env.CLIENT_URL
 });
 
 export default envConfig;

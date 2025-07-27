@@ -2,6 +2,7 @@ import createError from 'http-errors'
 
 // create globalErrorHandler Function 
 const globalErrorHandler = (err, req, res, next) => {
+
   if (!err.status) {
     const err = createError(500, "Internal Server Error");
     return next(err);

@@ -38,5 +38,9 @@ const changePasswordSchema = Joi.object({
     })
 })
 
+// forgetPasswordSchema 
+const forgetPasswordSchema = Joi.object({
+  email:Joi.string().email().required()
+})
 
-export { registerUserSchema, loginUserSchema, otpVerificationSchema,changePasswordSchema };
+export { registerUserSchema, loginUserSchema, otpVerificationSchema,changePasswordSchema,forgetPasswordSchema};

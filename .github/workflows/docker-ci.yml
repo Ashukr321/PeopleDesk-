@@ -35,14 +35,15 @@ jobs:
             USER_EMAIL_PASSWORD=${{secrets.USER_EMAIL_PASSWORD}}
             JWT_SECRET=${{secrets.JWT_SECRET}}
             JWT_TOKEN_EXPIRES_IN=${{secrets.JWT_TOKEN_EXPIRES_IN}}
+            CLIENT_URL=${{secrets.CLIENT_URL}}
             
       #frontend
-      # - name: Build and push Frontend image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: ./frontend
-      #     file: ./frontend/Dockerfile
-      #     push: true
-      #     tags: ashukr321/peopledesk-frontend:latest
-      #     build-args: |
-      #       FRONTEND_PORT=${{secrets.FRONTEND_PORT}}
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ashukr321/peopledesk-frontend:latest
+          build-args: |
+            FRONTEND_PORT=${{secrets.FRONTEND_PORT}}
