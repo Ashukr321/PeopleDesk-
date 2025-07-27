@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { registerUser, loginUser, changePassword, deleteAccount, forgetPassword, resetPassword, verifyOtp } from "./user.controller.js";
+import { registerUser, loginUser, changePassword, deleteAccount, forgetPassword, resetPassword, verifyOtp,logoutUser } from "./user.controller.js";
 import isAuthenticate from "../../middlewares/isAuthenticate.js";
 
 // 1. register 
@@ -22,7 +22,10 @@ router.post('/users/forget-password', forgetPassword);
 // 6 resetPassword
 router.put('/users/reset-password',isAuthenticate, resetPassword);
 
-// 7. deleteAccount
+// 7logoutUser
+router.get('/users/logout',isAuthenticate,logoutUser)
+
+// 8. deleteAccount
 router.get('/users/me', isAuthenticate, deleteAccount);
 
 // exports routes 
