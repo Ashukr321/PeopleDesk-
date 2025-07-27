@@ -1,5 +1,5 @@
 import createError from 'http-errors'
-import { registerUserSchema, loginUserSchema, otpVerificationSchema } from './user.validation.js';
+import { registerUserSchema, loginUserSchema, otpVerificationSchema,changePasswordSchema } from './user.validation.js';
 import User from './user.model.js';
 import bcrypt from 'bcrypt';
 import { sendEmail } from '../../utils/emailServices.js';
@@ -8,6 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import jwt from 'jsonwebtoken';
 import envConfig from '../../config/envConfig.js';
+import { create } from 'domain';
 const __dirname = path.resolve();
 
 
@@ -229,6 +230,29 @@ const verifyOtp = async (req, res, next) => {
 // 4. changePassword 
 const changePassword = async (req, res, next) => {
   try {
+    const {error,value} = changePasswordSchema.validate(req.body);
+    if(error){
+      return next(createError(400,error.message));
+    }
+    // getUserID 
+    const userId = await req.userId;
+    const userExits = await User.findById(userId);
+    const {currentPassword,newPassword,confirmNewPassword} = value;
+    if(!userExits){
+      const err = createError(400,"Invalid User");
+      return next(err);
+    }
+
+    const isMatchCurrentPassword = await bcrypt.compare(currentPassword,userExits.password);
+
+    if(!isMatchCurrentPassword){
+      const err = createError(400,"Current Password don't match!");
+      return next(err);
+    }
+    // hashNewPassword 
+    const hashNewPassword = await bcrypt.hash(newPassword,10);
+    userExits.password = hashNewPassword;
+    await userExits.save();
     return res.status(200).json({
       success: true,
       message: "✅Password Change Successfully!"
@@ -237,6 +261,8 @@ const changePassword = async (req, res, next) => {
     return next(error);
   }
 }
+
+
 // 5. deleteAccount
 const deleteAccount = async (req, res, next) => {
   try {
