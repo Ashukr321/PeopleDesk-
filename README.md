@@ -86,9 +86,10 @@ CLIENT_URL=https://your-frontend-url.com/
 - Generate a strong JWT secret for production
 - Update the `CLIENT_URL` to match your frontend deployment URL
 
+
 ## Backend Folder Structure
 
-
+```
 backend/
 ├── app.js
 ├── package.json
