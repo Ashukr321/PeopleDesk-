@@ -20,7 +20,7 @@ router.post('/users/change-password', isAuthenticate, changePassword)
 router.post('/users/forget-password', forgetPassword);
 
 // 6 resetPassword
-router.put('/users/reset-password', resetPassword);
+router.put('/users/reset-password',isAuthenticate, resetPassword);
 
 // 7. deleteAccount
 router.get('/users/me', isAuthenticate, deleteAccount);
