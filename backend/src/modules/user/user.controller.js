@@ -354,6 +354,27 @@ const resetPassword = async (req, res, next) => {
     return next(error);
   }
 }
+
+// 7 logoutUser
+const logoutUser = async(req,res,next)=>{
+  try {
+    const userId = req.userId;
+    const exitUser = await User.findById(userId);
+    if(!exitUser){
+      return next(createError(400,"User Not Found!"));
+    }
+    exitUser.isVerified=false;
+    await exitUser.save();
+    
+    return res.status(200).json({
+      success:true,
+      message:"logout SuccessFully!"
+    })
+
+  } catch (error) {
+    return next(error);
+  }
+}
 // 7. deleteAccount
 const deleteAccount = async (req, res, next) => {
   try {
@@ -368,4 +389,4 @@ const deleteAccount = async (req, res, next) => {
 
 
 
-export { registerUser, loginUser, verifyOtp, changePassword, deleteAccount, forgetPassword, resetPassword }
+export { registerUser, loginUser, verifyOtp, changePassword, deleteAccount, forgetPassword, resetPassword ,logoutUser}
