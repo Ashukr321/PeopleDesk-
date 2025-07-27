@@ -378,10 +378,19 @@ const logoutUser = async(req,res,next)=>{
 // 7. deleteAccount
 const deleteAccount = async (req, res, next) => {
   try {
+    const userId = req.userId;
+    const existUser = await User.findById(userId);
+    if (!existUser) {
+      const err = createError(400, "User Not Found!");
+      return next(err);
+    }
+
+    await User.deleteOne({ _id: userId });
+
     return res.status(200).json({
       success: true,
-      message: "✅ Account Delete SuccessfULLY!"
-    })
+      message: "✅ Account deleted successfully!"
+    });
   } catch (error) {
     return next(error);
   }
