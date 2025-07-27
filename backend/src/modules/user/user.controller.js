@@ -1,5 +1,5 @@
 import createError from 'http-errors'
-import { registerUserSchema, loginUserSchema, otpVerificationSchema,changePasswordSchema } from './user.validation.js';
+import { registerUserSchema, loginUserSchema, otpVerificationSchema, changePasswordSchema, forgetPasswordSchema } from './user.validation.js';
 import User from './user.model.js';
 import bcrypt from 'bcrypt';
 import { sendEmail } from '../../utils/emailServices.js';
@@ -203,7 +203,7 @@ const verifyOtp = async (req, res, next) => {
       return next(createError(400, "Incorrect OTP. Please try again."));
     }
     // set isVerified - true
-    existingUser.isVerified= true;
+    existingUser.isVerified = true;
     // Clear OTP and expiry from DB
     existingUser.otp = undefined;
     existingUser.otpExpiresAt = undefined;
@@ -230,27 +230,27 @@ const verifyOtp = async (req, res, next) => {
 // 4. changePassword 
 const changePassword = async (req, res, next) => {
   try {
-    const {error,value} = changePasswordSchema.validate(req.body);
-    if(error){
-      return next(createError(400,error.message));
+    const { error, value } = changePasswordSchema.validate(req.body);
+    if (error) {
+      return next(createError(400, error.message));
     }
     // getUserID 
     const userId = await req.userId;
     const userExits = await User.findById(userId);
-    const {currentPassword,newPassword,confirmNewPassword} = value;
-    if(!userExits){
-      const err = createError(400,"Invalid User");
+    const { currentPassword, newPassword, confirmNewPassword } = value;
+    if (!userExits) {
+      const err = createError(400, "Invalid User");
       return next(err);
     }
 
-    const isMatchCurrentPassword = await bcrypt.compare(currentPassword,userExits.password);
+    const isMatchCurrentPassword = await bcrypt.compare(currentPassword, userExits.password);
 
-    if(!isMatchCurrentPassword){
-      const err = createError(400,"Current Password don't match!");
+    if (!isMatchCurrentPassword) {
+      const err = createError(400, "Current Password don't match!");
       return next(err);
     }
     // hashNewPassword 
-    const hashNewPassword = await bcrypt.hash(newPassword,10);
+    const hashNewPassword = await bcrypt.hash(newPassword, 10);
     userExits.password = hashNewPassword;
     await userExits.save();
     return res.status(200).json({
@@ -262,8 +262,83 @@ const changePassword = async (req, res, next) => {
   }
 }
 
+// 5. forgetPassword   ❌No required auth 
+const forgetPassword = async (req, res, next) => {
+  try {
+    const { error, value } = forgetPasswordSchema.validate(req.body);
+    if (error) {
+      const err = createError(400, error.message);
+      return next(err);
+    }
 
-// 5. deleteAccount
+    const { email } = value;
+
+    const userExits = await User.findOne({ email });
+
+    if (!userExits) {
+      const err = createError(400, "User Not Found !");
+      return next(err);
+    }
+
+    // create resetTokenLink
+    const resetToken = jwt.sign(
+      { userId: userExits._id },
+      envConfig.jwt_secret,
+      { expiresIn: '1h' }
+    );
+
+    // Set resetPasswordExpires to 1 hour from now
+    userExits.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000);
+    await userExits.save();
+
+    const resetLink = `${envConfig.client_url}/reset-password?token=${resetToken}`;
+
+    // get mail template path
+    const resetPasswordMail = path.join(__dirname, 'src', 'mailTemplates', 'forgetPassword.html');
+
+    let resetHtml = fs.readFileSync(resetPasswordMail, 'utf-8');
+
+    resetHtml = `<div style="text-align:center;">
+      <h2>Password Reset Request</h2>
+      <p>Click the link below to reset your password:</p>
+      <a href="${resetLink}" style="display:inline-block;padding:10px 20px;background:#007bff;color:#fff;text-decoration:none;border-radius:5px;">Reset Password</a>
+      <p>If you did not request this, please ignore this email.</p>
+    </div>`;
+
+    try {
+      await sendEmail({
+        to: email,
+        subject: "Password Reset Request - Action Required",
+        html: resetHtml,
+      });
+    } catch (mailError) {
+      return next(createError(500, "Failed to send reset password email. Please try again later."));
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Reset password link sent to your registered email.",
+    });
+
+  } catch (error) {
+    return next(error);
+  }
+};
+
+
+// 6. resetPassword
+const resetPassword = async (req, res, next) => {
+  try {
+    return res.status(200).json({
+      success: true,
+      message: "your password has be changed !"
+    })
+
+  } catch (error) {
+    return next(error);
+  }
+}
+// 7. deleteAccount
 const deleteAccount = async (req, res, next) => {
   try {
     return res.status(200).json({
@@ -274,18 +349,7 @@ const deleteAccount = async (req, res, next) => {
     return next(error);
   }
 }
-// 6. forgetPassword   ❌No required auth 
-const forgetPassword = async (req, res, next) => {
-  try {
-    return res.status(200).json({
-      success: true,
-      message: "Reset password link sent to your registered email."
-    });
-  } catch (error) {
-    return next(error);
-  }
-}
 
 
 
-export { registerUser, loginUser, verifyOtp, changePassword, deleteAccount, forgetPassword }
+export { registerUser, loginUser, verifyOtp, changePassword, deleteAccount, forgetPassword, resetPassword }
