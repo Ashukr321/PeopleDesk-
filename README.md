@@ -45,13 +45,50 @@ For detailed requirements and future plans, please refer to the PDF document:
 - http-errors
 - nodemailer 
 
+## Environment Configuration
 
+The project uses environment variables for configuration. Copy the example environment file and fill in your own values:
 
+```bash
+# Copy the example environment file
+cp backend/.example.env backend/.env
+```
 
+### Environment Variables
+
+The following environment variables need to be configured in your `.env` file:
+
+```env
+# Server port
+PORT=8080
+
+# MongoDB connection string
+MONGO_URI=mongodb://localhost:27017/
+
+# Database name
+DB_NAME=peopleDesk
+
+# Email credentials for sending emails (use your own email and app password)
+USER_EMAIL=your_email@example.com
+USER_EMAIL_PASSWORD=your_email_app_password
+
+# JWT secret and token expiry
+JWT_SECRET=your_jwt_secret
+JWT_TOKEN_EXPIRES_IN=1d
+
+# Client URL (frontend)
+CLIENT_URL=https://your-frontend-url.com/
+```
+
+**Important Notes:**
+- Replace `your_email@example.com` with your actual email address
+- Replace `your_email_app_password` with your email app password (not your regular password)
+- Generate a strong JWT secret for production
+- Update the `CLIENT_URL` to match your frontend deployment URL
 
 ## Backend Folder Structure
 
-```
+
 backend/
 ├── app.js
 ├── package.json
