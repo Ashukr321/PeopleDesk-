@@ -1,5 +1,5 @@
 import createError from 'http-errors'
-import { registerUserSchema, loginUserSchema, otpVerificationSchema, changePasswordSchema, forgetPasswordSchema } from './user.validation.js';
+import { registerUserSchema, loginUserSchema, otpVerificationSchema, changePasswordSchema, forgetPasswordSchema,resetPasswordSchema } from './user.validation.js';
 import User from './user.model.js';
 import bcrypt from 'bcrypt';
 import { sendEmail } from '../../utils/emailServices.js';
@@ -280,11 +280,11 @@ const forgetPassword = async (req, res, next) => {
       return next(err);
     }
 
-    // create resetTokenLink
+    // create resetTokenLink (expires in 5 minutes)
     const resetToken = jwt.sign(
       { userId: userExits._id },
       envConfig.jwt_secret,
-      { expiresIn: '1h' }
+      { expiresIn: '5m' }
     );
 
     // Set resetPasswordExpires to 1 hour from now
@@ -329,6 +329,22 @@ const forgetPassword = async (req, res, next) => {
 // 6. resetPassword
 const resetPassword = async (req, res, next) => {
   try {
+
+    const {error,value} = resetPasswordSchema.validate(req.body);
+    if(error){
+      return next(createError(400,error.message));
+    }
+    // get userId
+    const userId = req.userId;
+    const {newPassword} = value;
+
+    // userExits 
+    const userExits = await User.findById(userId);
+    // hash newPassword 
+    const hashNewPassword = await bcrypt.hash(newPassword,10);
+    userExits.password = hashNewPassword;
+    await userExits.save();
+    
     return res.status(200).json({
       success: true,
       message: "your password has be changed !"

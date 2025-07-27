@@ -43,4 +43,15 @@ const forgetPasswordSchema = Joi.object({
   email:Joi.string().email().required()
 })
 
-export { registerUserSchema, loginUserSchema, otpVerificationSchema,changePasswordSchema,forgetPasswordSchema};
+// resetPasswordSchema 
+const resetPasswordSchema = Joi.object({
+  newPassword:Joi.string().min(6).required(),
+  confirmNewPassword:Joi.string().valid(Joi.ref('newPassword')).required()
+  .messages({
+    'any.only': 'Confirm new password must match new password.',
+    'string.empty': 'Confirm new password is required.'
+  })
+})
+
+
+export { registerUserSchema, loginUserSchema, otpVerificationSchema,changePasswordSchema,forgetPasswordSchema,resetPasswordSchema};
