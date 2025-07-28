@@ -1,5 +1,5 @@
 import createError from 'http-errors'
-import { registerUserSchema, loginUserSchema, otpVerificationSchema, changePasswordSchema, forgetPasswordSchema,resetPasswordSchema } from './user.validation.js';
+import { registerUserSchema, loginUserSchema, otpVerificationSchema, changePasswordSchema, forgetPasswordSchema, resetPasswordSchema, updateUserNameSchema } from './user.validation.js';
 import User from './user.model.js';
 import bcrypt from 'bcrypt';
 import { sendEmail } from '../../utils/emailServices.js';
@@ -330,21 +330,21 @@ const forgetPassword = async (req, res, next) => {
 const resetPassword = async (req, res, next) => {
   try {
 
-    const {error,value} = resetPasswordSchema.validate(req.body);
-    if(error){
-      return next(createError(400,error.message));
+    const { error, value } = resetPasswordSchema.validate(req.body);
+    if (error) {
+      return next(createError(400, error.message));
     }
     // get userId
     const userId = req.userId;
-    const {newPassword} = value;
+    const { newPassword } = value;
 
     // userExits 
     const userExits = await User.findById(userId);
     // hash newPassword 
-    const hashNewPassword = await bcrypt.hash(newPassword,10);
+    const hashNewPassword = await bcrypt.hash(newPassword, 10);
     userExits.password = hashNewPassword;
     await userExits.save();
-    
+
     return res.status(200).json({
       success: true,
       message: "your password has be changed !"
@@ -356,26 +356,26 @@ const resetPassword = async (req, res, next) => {
 }
 
 // 7 logoutUser
-const logoutUser = async(req,res,next)=>{
+const logoutUser = async (req, res, next) => {
   try {
     const userId = req.userId;
     const exitUser = await User.findById(userId);
-    if(!exitUser){
-      return next(createError(400,"User Not Found!"));
+    if (!exitUser) {
+      return next(createError(400, "User Not Found!"));
     }
-    exitUser.isVerified=false;
+    exitUser.isVerified = false;
     await exitUser.save();
-    
+
     return res.status(200).json({
-      success:true,
-      message:"logout SuccessFully!"
+      success: true,
+      message: "logout SuccessFully!"
     })
 
   } catch (error) {
     return next(error);
   }
 }
-// 7. deleteAccount
+// 8. deleteAccount
 const deleteAccount = async (req, res, next) => {
   try {
     const userId = req.userId;
@@ -397,5 +397,30 @@ const deleteAccount = async (req, res, next) => {
 }
 
 
+// 9 updateUserName 
+const updateUserName = async (req, res, next) => {
+  try {
+    const { error, value } = updateUserNameSchema.validate(req.body);
+    if (error) {
+      return next(createError(400, error.message));
+    }
+    const userId = req.userId;
+    const { name } = value;
+    const existUser = await User.findById(userId);
 
-export { registerUser, loginUser, verifyOtp, changePassword, deleteAccount, forgetPassword, resetPassword ,logoutUser}
+    if (!existUser) {
+      return next(createError(400, "User Not Found!"));
+    }
+
+    existUser.name = name;
+    await existUser.save();
+    return res.status(200).json({
+      success: true,
+      message: "UserName updated! )"
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+export { registerUser, loginUser, verifyOtp, changePassword, deleteAccount, forgetPassword, resetPassword, logoutUser, updateUserName }

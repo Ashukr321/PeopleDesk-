@@ -52,6 +52,12 @@ const resetPasswordSchema = Joi.object({
     'string.empty': 'Confirm new password is required.'
   })
 })
+// updateUserNameSchema 
+
+const updateUserNameSchema = Joi.object({
+  name: Joi.string().min(3).max(30).required(),
+})
 
 
-export { registerUserSchema, loginUserSchema, otpVerificationSchema,changePasswordSchema,forgetPasswordSchema,resetPasswordSchema};
+
+export { registerUserSchema, loginUserSchema, otpVerificationSchema,changePasswordSchema,forgetPasswordSchema,resetPasswordSchema,updateUserNameSchema};

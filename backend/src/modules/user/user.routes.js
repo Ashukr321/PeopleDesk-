@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { registerUser, loginUser, changePassword, deleteAccount, forgetPassword, resetPassword, verifyOtp,logoutUser } from "./user.controller.js";
+import { registerUser, loginUser, changePassword, deleteAccount, forgetPassword, resetPassword, verifyOtp,logoutUser,updateUserName } from "./user.controller.js";
 import isAuthenticate from "../../middlewares/isAuthenticate.js";
 
 // 1. register 
@@ -28,5 +28,7 @@ router.get('/users/logout',isAuthenticate,logoutUser)
 // 8. deleteAccount
 router.get('/users/me', isAuthenticate, deleteAccount);
 
+// 9 updateUserName 
+router.patch('/users/update-username',isAuthenticate,updateUserName);
 // exports routes 
 export default router;
