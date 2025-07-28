@@ -3,7 +3,7 @@ import globalErrorHandler from './middlewares/globalErrorHandler.js';
 import cors  from 'cors'
 // import routes
 import userRoutes from './modules/user/user.routes.js'
-
+import profileRoutes from './modules/profile/profile.routes.js'
 // create server 
 const app = express();
 
@@ -19,6 +19,7 @@ app.use(express.json());
 // baseUrl 
 const baseUrl = "/api"
 app.use(`${baseUrl}`, userRoutes);
+app.use(`${baseUrl}`, profileRoutes);
 
 // default route 
 app.get('/', (req, res, next) => {
