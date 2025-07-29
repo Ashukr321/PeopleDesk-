@@ -1,22 +1,79 @@
+
 services:
-  backend:
+  # Multiple backend instances (manually defined for load balancing)
+  backend1:
     build:
       context: ./backend
-    ports:
-      - 8080:8080
+    container_name: peopleDesk-backend-1
     env_file:
       - ./backend/.env
-    container_name: peopleDesk-services
-  # frontend services 
+    networks:
+      - peopleDesk-net
+
+  backend2:
+    build:
+      context: ./backend
+    container_name: peopleDesk-backend-2
+    env_file:
+      - ./backend/.env
+    networks:
+      - peopleDesk-net
+
+  backend3:
+    build:
+      context: ./backend
+    container_name: peopleDesk-backend-3
+    env_file:
+      - ./backend/.env
+    networks:
+      - peopleDesk-net
+
+  backend4:
+    build:
+      context: ./backend
+    container_name: peopleDesk-backend-4
+    env_file:
+      - ./backend/.env
+    networks:
+      - peopleDesk-net
+
+  backend5:
+    build:
+      context: ./backend
+    container_name: peopleDesk-backend-5
+    env_file:
+      - ./backend/.env
+    networks:
+      - peopleDesk-net
+
+  # Frontend service
   frontend:
-    build: 
+    build:
       context: ./frontend
-    ports:
-    - 3000:3000
-
-
+    container_name: peopleDesk-frontend
     env_file:
       - ./frontend/.env
-    container_name: peopleDesk-frontend
+    networks:
+      - peopleDesk-net
 
+  # NGINX reverse proxy
+  nginx:
+    image: nginx:latest
+    container_name: peopleDesk-nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+      - backend4
+      - backend5
+      - frontend
+    networks:
+      - peopleDesk-net
 
+networks:
+  peopleDesk-net:
+    driver: bridge
