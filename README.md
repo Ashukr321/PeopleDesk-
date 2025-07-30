@@ -104,10 +104,13 @@ backend/
     │   ├── connectDb.js
     │   └── envConfig.js
     ├── middlewares/
-    │   └── globalErrorHandler.js
+    │   ├── globalErrorHandler.js
+    │   └── isAuthenticate.js
     ├── mailTemplates/
     │   ├── loginUser.html
-    │   └── registerUser.html
+    │   ├── registerUser.html
+    │   ├── forgetPassword.html
+    │   └── resetPassword.html
     ├── utils/
     │   ├── emailServices.js
     │   └── generateOTP.js
@@ -119,7 +122,8 @@ backend/
     │   ├── profile/
     │   │   ├── profile.controller.js
     │   │   ├── profile.model.js
-    │   │   └── profile.routes.js
+    │   │   ├── profile.routes.js
+    │   │   └── profile.validation.js
     │   └── user/
     │       ├── user.controller.js
     │       ├── user.model.js
